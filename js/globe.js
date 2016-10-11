@@ -61,25 +61,25 @@ DAT.Globe = function(container) {
 
   var camera, scene, renderer, w, h;
   var mesh, atmosphere, point;
-
   var overRenderer;
-
   var imgDir = '/img/';
-
   var curZoomSpeed = 0;
   var zoomSpeed = 50;
-
   var mouse = { x: 0, y: 0 }, mouseOnDown = { x: 0, y: 0 };
   var rotation = { x: 0, y: 0 },
-      target = { x: Math.PI*3/20, y: Math.PI / 6.0 },
+      target = { x: -Math.PI / 4, y: Math.PI / 9.0 },
+      // target = { x: 23.885942, y: 45.079162 },
       targetOnDown = { x: 0, y: 0 };
-
   var distance = 100000, distanceTarget = 100000;
   var padding = 40;
   var PI_HALF = Math.PI / 2;
+  var colorFn = function(x) {
+    var c = new THREE.Color();
+    c.setHSL( ( 0.6 - ( x * 0.5 ) ), 1.0, 0.5 );
+    return c;
+  };
 
   function init() {
-
     container.style.color = '#fff';
     container.style.font = '13px/20px Arial, sans-serif';
 
@@ -87,7 +87,7 @@ DAT.Globe = function(container) {
     w = container.offsetWidth || window.innerWidth;
     h = container.offsetHeight || window.innerHeight;
 
-    camera = new THREE.PerspectiveCamera(30, w / h, 1, 10000);
+    camera = new THREE.PerspectiveCamera(32, w / h, 1, 10000);
     camera.position.z = distance;
 
     scene = new THREE.Scene();
@@ -96,11 +96,8 @@ DAT.Globe = function(container) {
 
     shader = Shaders['earth'];
     uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-
-    uniforms['texture'].value = THREE.ImageUtils.loadTexture('image/world.jpg');
-
+    uniforms['texture'].value = THREE.ImageUtils.loadTexture('../image/world.jpg');
     material = new THREE.ShaderMaterial({
-
           uniforms: uniforms,
           vertexShader: shader.vertexShader,
           fragmentShader: shader.fragmentShader
@@ -115,21 +112,19 @@ DAT.Globe = function(container) {
     uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
     material = new THREE.ShaderMaterial({
-
           uniforms: uniforms,
           vertexShader: shader.vertexShader,
           fragmentShader: shader.fragmentShader,
           side: THREE.BackSide,
           blending: THREE.AdditiveBlending,
           transparent: true
-
         });
 
     mesh = new THREE.Mesh(geometry, material);
     mesh.scale.set( 1.1, 1.1, 1.1 );
     scene.add(mesh);
 
-    geometry = new THREE.CubeGeometry(0.75, 0.75, 1);
+    geometry = new THREE.BoxGeometry(0.75, 0.75, 1);
     geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,-0.5));
 
     point = new THREE.Mesh(geometry);
@@ -157,12 +152,9 @@ DAT.Globe = function(container) {
       overRenderer = false;
     }, false);
   }
-
-
 //
   addData = function(data, opts) {
-    var lat, lng, size, i, color, step, colorFnWrapper;
-      //  color = new THREE.Color().setRGB(1, 0, 0),
+    var lat, lng, size, i, color;
         subgeo = new THREE.Geometry();
     for (i = 0; i < data.length; i += 3) {
       lat = data[i];
@@ -173,12 +165,6 @@ DAT.Globe = function(container) {
       addPoint(lat, lng, size, color, subgeo);
     }
     this._baseGeometry = subgeo;
-  };
-
-  var colorFn = function(x) {
-    var c = new THREE.Color();
-    c.setHSL( ( 0.6 - ( x * 0.5 ) ), 1.0, 0.5 );
-    return c;
   };
 
   function createPoints() {
@@ -207,12 +193,12 @@ DAT.Globe = function(container) {
     point.updateMatrix();
 
     for (var i = 0; i < point.geometry.faces.length; i++) {
-
       point.geometry.faces[i].color = color;
-
     }
 
-    THREE.GeometryUtils.merge(subgeo, point);
+    point.updateMatrix();
+    subgeo.merge( point.geometry, point.matrix );
+
   }
 
   function onMouseDown(event) {
@@ -313,7 +299,6 @@ DAT.Globe = function(container) {
 
   init();
   this.animate = animate;
-
 
   this.__defineGetter__('time', function() {
     return this._time || 0;
