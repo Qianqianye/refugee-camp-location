@@ -162,19 +162,24 @@ DAT.Globe = function(container) {
 //
   addData = function(data, opts) {
     var lat, lng, size, i, color, step, colorFnWrapper;
-        color = new THREE.Color().setRGB(1, 0, 0),
+      //  color = new THREE.Color().setRGB(1, 0, 0),
         subgeo = new THREE.Geometry();
     for (i = 0; i < data.length; i += 3) {
       lat = data[i];
       lng = data[i + 1];
       size = data[i + 2];
       size = size / 600;
+      color = colorFn(i/data.length);
       addPoint(lat, lng, size, color, subgeo);
     }
     this._baseGeometry = subgeo;
   };
 
-
+  var colorFn = function(x) {
+    var c = new THREE.Color();
+    c.setHSL( ( 0.6 - ( x * 0.5 ) ), 1.0, 0.5 );
+    return c;
+  };
 
   function createPoints() {
       if (this._baseGeometry !== undefined) {

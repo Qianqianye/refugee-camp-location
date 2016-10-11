@@ -106,7 +106,7 @@
   <div id="container"></div>
 
   <div id="info">
-    <strong><a href="http://www.chromeexperiments.com/globe">WebGL Globe</a></strong> <span class="bull">&bull;</span> Created by <a href="http://qianqian-ye.com/" style="color: #b3ecec">Qianqian Ye</a> <span class="bull">&bull;</span> Data acquired from <a href="http://storymaps.esri.com/stories/2013/refugee-camps/">ESRI</a>
+    <strong><a href="http://www.chromeexperiments.com/globe">WebGL Globe</a></strong> <span class="bull">&bull;</span> Created by <a href="http://qianqian-ye.com/" style="color: #b3ecec">Qianqian Ye</a><span class="bull">&bull;</span>Source code on<a href="https://github.com/Qianqianye/refugee-camp-location">Github</a> <span class="bull">&bull;</span> Data acquired from <a href="http://storymaps.esri.com/stories/2013/refugee-camps/">ESRI</a> & <a href="http://www.arcgis.com/sharing/rest/content/items/0ce3ca907158463b87520d2d7c9a14fd/data?f=json">ARCGIS</a>
   </div>
 
   <!-- <div id="currentInfo">
@@ -119,9 +119,9 @@
     Fifty Most Populous Refugee Camps
   </div>
 
-  <a id="ce" href="http://www.chromeexperiments.com/globe">
+ <!--  <a id="ce" href="http://www.chromeexperiments.com/globe">
     <span>This is a Chrome Experiment</span>
-  </a>
+  </a> -->
 
   <script type="text/javascript" src="js/three.min.js"></script>
   <script type="text/javascript" src="js/Detector.js"></script>  
@@ -165,7 +165,7 @@
       
       
       xhr = new XMLHttpRequest();
-      xhr.open('GET', 'Refugee_Camps.json', true);
+      xhr.open('GET', 'json/Parsed_refugee_camp_data.json', true);
       xhr.onreadystatechange = function(e) {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
